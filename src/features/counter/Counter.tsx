@@ -1,27 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import {
-  decrement,
-  increment,
-  incrementByAmount,
-  incrementAsync,
-  incrementIfOdd,
-  selectCount,
-} from './counterSlice';
-import styles from './Counter.module.css';
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { addTodo, selectedTodos } from "./counterSlice";
+import styles from "./Counter.module.css";
+import { Todo } from "./Todo";
 
 export function Counter() {
-  const count = useAppSelector(selectCount);
+  const [todoInput, setTodoInput] = useState("");
+  const todos = useAppSelector(selectedTodos);
   const dispatch = useAppDispatch();
-  const [incrementAmount, setIncrementAmount] = useState('2');
+  const [incrementAmount, setIncrementAmount] = useState("2");
 
   const incrementValue = Number(incrementAmount) || 0;
+
+  const handleOnInputChange = (e: any) => {
+    setTodoInput(e.target.value);
+  };
+
+  const handleAddTodo = () => {
+    dispatch(addTodo(todoInput));
+    setTodoInput("");
+  };
 
   return (
     <div>
       <div className={styles.row}>
-        <button
+        <input
+          aria-label="Set increment amount"
+          value={todoInput}
+          onChange={handleOnInputChange}
+        />
+        <button onClick={handleAddTodo}> ADD</button>
+
+        <ul>
+          {todos.length ? (
+            todos.map((todo) => (
+              <div>
+                <Todo todo={todo} />
+              </div>
+            ))
+          ) : (
+            <div>No todos</div>
+          )}
+        </ul>
+
+        {/* <button
           className={styles.button}
           aria-label="Decrement value"
           onClick={() => dispatch(decrement())}
@@ -61,7 +84,7 @@ export function Counter() {
           onClick={() => dispatch(incrementIfOdd(incrementValue))}
         >
           Add If Odd
-        </button>
+        </button> */}
       </div>
     </div>
   );
